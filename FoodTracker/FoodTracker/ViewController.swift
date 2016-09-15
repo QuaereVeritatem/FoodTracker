@@ -14,8 +14,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     // MARK: Properties
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var mealNameLabel: UILabel!
-    
     @IBOutlet weak var photoImageView: UIImageView!
+    
+    @IBOutlet weak var ratingControl: RatingControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,9 +53,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     }
     
     // MARK: Actions
-    @IBAction func setDefaultLabelText(sender: UIButton) {
-        mealNameLabel.text = "Default Text"
-    }
+
     
     @IBAction func selectImageFromPhotoLibrary(sender: UITapGestureRecognizer) {
         // Hide the keyboard.
@@ -72,6 +71,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         presentViewController(imagePickerController, animated: true, completion: nil)
     }
 
-//UIImagepicker delegates tap gesture recognizers, photview and photos added 
+
 }
 
