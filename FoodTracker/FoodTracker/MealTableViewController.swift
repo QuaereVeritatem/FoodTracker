@@ -112,5 +112,16 @@ class MealTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
+        // the optional type cast operator (as?) trys to downcast the source view controller of the segue, to type MealViewController and returns an optional value, which will be nil if the downcast wasn’t possible. If the downcast succeeds, the code assigns that view controller to the local constant sourceViewController. (If either the downcast fails or the meal property on sourceViewController is nil, the condition evaluates to false and the if statement doesn’t get executed.)
+        if let sourceViewController = sender.sourceViewController as? MealViewController, meal = sourceViewController.meal {
+            // Add a new meal.
+            //computes the location in the table view where the new table view cell representing the new meal will be inserted
+            let newIndexPath = NSIndexPath(forRow: meals.count, inSection: 0)
+            meals.append(meal)
+            tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
+        }
+    }
 
 }
