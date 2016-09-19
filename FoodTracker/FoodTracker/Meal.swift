@@ -15,8 +15,8 @@ class Meal: NSObject, NSCoding {
     
     //a persistent path on the file system where data will be saved and loaded..
     //access the path using the syntax Meal.ArchiveURL.path!(when accessed outside the class)
-    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("meals")
+    static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
+    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("meals")
     //constants marked with static keyword apply to the class instead of an instance of the class.
     
     // MARK: Types
@@ -51,17 +51,17 @@ class Meal: NSObject, NSCoding {
     // MARK: NSCoding
     
     //The encodeWithCoder(_:) method prepares the class’s information to be archived, and the initializer unarchives the data when the class is created.
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(name, forKey: PropertyKey.nameKey)
-        aCoder.encodeObject(photo, forKey: PropertyKey.photoKey)
-        aCoder.encodeInteger(rating, forKey: PropertyKey.ratingKey)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(name, forKey: PropertyKey.nameKey)
+        aCoder.encode(photo, forKey: PropertyKey.photoKey)
+        aCoder.encode(rating, forKey: PropertyKey.ratingKey)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
-        let name = aDecoder.decodeObjectForKey(PropertyKey.nameKey) as! String
+        let name = aDecoder.decodeObject(forKey: PropertyKey.nameKey) as! String
         // Because photo is an optional property of Meal, use conditional cast.
-        let photo = aDecoder.decodeObjectForKey(PropertyKey.photoKey) as? UIImage
-        let rating = aDecoder.decodeIntegerForKey(PropertyKey.ratingKey)
+        let photo = aDecoder.decodeObject(forKey: PropertyKey.photoKey) as? UIImage
+        let rating = aDecoder.decodeInteger(forKey: PropertyKey.ratingKey)
         // Must call designated initializer.
         self.init(name: name, photo: photo, rating: rating)
     }
