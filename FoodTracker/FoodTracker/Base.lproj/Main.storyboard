@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X9J-Fl-BnK" id="UhQ-j3-ydq">
-                                    <frame key="frameInset" width="375" height="89.5"/>
+                                    <frame key="frameInset" width="375" height="89"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="1sj-WX-qKc">
@@ -79,8 +79,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="vt8-hR-Ab6">
-                                <frame key="frameInset" minX="20" minY="80" width="343" height="418"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="vt8-hR-Ab6">
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="560" placeholderIntrinsicHeight="30" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Meal Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FLB-VW-HH2">
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>

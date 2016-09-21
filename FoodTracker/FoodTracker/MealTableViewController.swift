@@ -13,9 +13,16 @@ class MealTableViewController: UITableViewController {
     // MARK: Properties
     
     var meals = [Meal]()
+   // var BEMeals = BacklendlessMeal()
+    var BackendVC = BackendlessViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //check for backendless first
+        BackendVC.checkForBackendlessSetup()
+        //BackendVC.registerUser()
+        BackendVC.logInUser()
         
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
@@ -149,6 +156,7 @@ class MealTableViewController: UITableViewController {
                     tableView.insertRows(at: [newIndexPath], with: .bottom)
                 }
             // Save the meals.
+            //***************** if logged in use backendless
             saveMeals()
             
             }
@@ -157,14 +165,49 @@ class MealTableViewController: UITableViewController {
 
     // MARK: NSCoding
     
+    //save here only if user already logged in....this demo want worry about it though
     func saveMeals() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
+        
+        //if logged in save meals from backendless
+        if BackendVC.backendless.userService.isValidUserToken() != nil && BackendVC.backendless.userService.isValidUserToken() != 0 {
+            //put in code to save from backend and error handling?
+            let BEMeal = meals.last
+         //   BEMeal?.name = "Hello, from iOS user!"
+         //   BEMeal?.photo  = "CoolPicBro"
+         //   BEMeal?.rating  = 5
+            
+            BackendVC.backendless.data.save( BEMeal,
+                                   
+                                   response: { (entity: Any?) -> Void in
+                                    
+                                    let BEMeal = entity as! Meal
+                                    
+                                    print("Comment was saved: \(BEMeal.name), message: \"\(BEMeal.rating)\"")
+                },
+                                   
+                                   error: { (fault: Fault?) -> Void in
+                                    print("Comment failed to save: \(fault)")
+                }
+            )            
+            
+        } else {
+            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
         if !isSuccessfulSave {
             print("Failed to save meals...")
-        }
+            }
+        } //the end of archived save
     }
     
     func loadMeals() -> [Meal]? {
+        
+        //if logged in load meals from backendless
+     //  if BackendVC.backendless.userService.isValidUserToken() != nil && BackendVC.backendless.userService.isValidUserToken() != 0 {
+            //put in code to load from backend and return from here
+     //   return [Meal]? //fix this
+      // }// else {
         return NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal]
-    }
+       }
+    
 }
+
+

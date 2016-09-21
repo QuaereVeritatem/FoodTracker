@@ -12,10 +12,30 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    //Backendless variablles
+    let VERSION_NUM = "v1"
+    
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Replace these with YOUR App's ID and Secret Key from YOUR Backendless Dashboard!
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let APP_ID = "BB167472-BAE1-DCBC-FF4C-0E475BF35E00"
+    let SECRET_KEY = "CA8325C6-6AF9-E6C5-FF4D-E6ED01505D00"
+    
+
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //backendless test for keys entered vs default keys 
+        if APP_ID != "<replace-with-your-app-id>" && SECRET_KEY != "<replace-with-your-secret-key>" {
+            
+            let backendless = Backendless.sharedInstance()
+            backendless?.initApp(APP_ID, secret:SECRET_KEY, version:VERSION_NUM)
+            backendless?.userService.setStayLoggedIn(true)
+        }
+
+        
         return true
     }
 
