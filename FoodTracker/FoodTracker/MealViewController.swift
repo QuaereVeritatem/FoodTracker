@@ -22,7 +22,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
      This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
      or constructed as part of adding a new meal.
      */
-    var meal: Meal?
+    var meal: Meal? //class Meal is called 'MealData' in other foodtracker
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +34,14 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         if let meal = meal {
             navigationItem.title = meal.name
             nameTextField.text   = meal.name
-            photoImageView.image = meal.photo
+            
+            //loadimagefromUrl a renamed function
+            if BackendlessManager.sharedInstance.isUserLoggedIn() && meal.photoUrl != nil {
+                loadImageFromUrl(imageView: photoImageView, photoUrl: meal.photoUrl!)
+            } else {
+                photoImageView.image = meal.photo
+            }
+            
             ratingControl.rating = meal.rating
         }
         
@@ -96,14 +103,29 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     // This method lets you configure a view controller before it's presented.
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if saveButton === sender as! UIBarButtonItem {
+        if saveButton === (sender as! UIBarButtonItem) {
             //if it’s nil, the nil coalescing operator then returns the empty string ("") instead.
             let name = nameTextField.text ?? ""
             let photo = photoImageView.image
             let rating = ratingControl.rating
             
+// TODO: Fix
+            let photoUrl = "https://guildsa.org/wp-content/uploads/2016/09/meal1.png"
+            
             // Set the meal to be passed to MealTableViewController after the unwind segue.
+            if meal == nil {
+
             meal = Meal(name: name, photo: photo, rating: rating)
+                
+            meal?.photoUrl = photoUrl
+                
+            } else {
+                
+                meal?.name = name
+                meal?.photo = photo
+                meal?.rating = rating
+                meal?.photoUrl = photoUrl
+            }
         }
     }
     
@@ -126,6 +148,40 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         present(imagePickerController, animated: true, completion: nil)
     }
 
-
+    func loadImageFromUrl(imageView: UIImageView, photoUrl: String) {
+        
+        let url = URL(string: photoUrl)!
+        
+        let session = URLSession.shared
+        
+        let task = session.dataTask(with: url, completionHandler: { (data, response, error) in
+            
+            if error == nil {
+                
+                do {
+                    
+                    let data = try Data(contentsOf: url, options: [])
+                    
+                    DispatchQueue.main.async {
+                        
+                        // We got the image data! Use it to create a UIImage for our cell's
+                        // UIImageView.
+                        imageView.image = UIImage(data: data)
+                        
+                        // TODO: Add activity indicator.
+                        //activityIndicator.stopAnimating()
+                    }
+                    
+                } catch {
+                    print("NSData Error: \(error)")
+                }
+                
+            } else {
+                print("NSURLSession Error: \(error)")
+            }
+        })
+        
+        task.resume()
+    }
 }
 

@@ -8,11 +8,24 @@
 
 import UIKit
 
+//This is class is equivalent to MealData on the other foodtracker [Done..delete this comment] 
 class Meal: NSObject, NSCoding {
-    // MARK: Properties
+    
+    // MARK: Common Properties Shared by Archiver and Backendless
+    
+    var name: String
+    var rating: Int
+    
+    // MARK: Archiver Only Properties
+    
+    var photo: UIImage?
+    
+    // MARK: Backendless Only Properties
+    
+    var objectId: String?
+    var photoUrl: String?
     
     // MARK: Archiving Paths
-    
     //a persistent path on the file system where data will be saved and loaded..
     //access the path using the syntax Meal.ArchiveURL.path!(when accessed outside the class)
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -27,13 +40,10 @@ class Meal: NSObject, NSCoding {
         static let ratingKey = "rating"
     }
     
-    var name: String
-    var photo: UIImage?
-    var rating: Int
-    
     // MARK: Initialization
     
     init?(name: String, photo: UIImage?, rating: Int) {
+        
         // Initialize stored properties.
         self.name = name
         self.photo = photo
@@ -58,10 +68,14 @@ class Meal: NSObject, NSCoding {
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
+        
         let name = aDecoder.decodeObject(forKey: PropertyKey.nameKey) as! String
+        
         // Because photo is an optional property of Meal, use conditional cast.
         let photo = aDecoder.decodeObject(forKey: PropertyKey.photoKey) as? UIImage
+        
         let rating = aDecoder.decodeInteger(forKey: PropertyKey.ratingKey)
+        
         // Must call designated initializer.
         self.init(name: name, photo: photo, rating: rating)
     }
