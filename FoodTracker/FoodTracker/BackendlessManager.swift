@@ -141,7 +141,7 @@ class BackendlessManager {
         )
     }
     
-    func saveMeal(mealData: Meal) {
+   func saveMeal(mealData: Meal, completion: @escaping () -> (), error: @escaping () -> ()) {
         
         let mealToSave = BackendlessMeal()
         mealToSave.name = mealData.name
@@ -163,6 +163,8 @@ class BackendlessManager {
                                 print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
                                 
                                 mealData.objectId = meal.objectId
+                                
+                                completion()
             },
                                
                                error: { (fault: Fault?) -> Void in
@@ -215,7 +217,7 @@ class BackendlessManager {
         )
     }
     
-    func removeMeal(mealToRemove: Meal, completion: () -> ()) {
+    func removeMeal(mealToRemove: Meal, completion: () -> (), error: @escaping () -> ()) {
         
         let meal = BackendlessMeal()
         
@@ -227,17 +229,19 @@ class BackendlessManager {
         
         let dataStore = backendless.persistenceService.of(BackendlessMeal.ofClass())
         //dont delete something until it was removed from the database first!
-        var error: Fault?
-        let result = dataStore?.remove(meal, fault: &error)
+        var fault: Fault?
+        let result = dataStore?.remove(meal, fault: &fault)
         
-        if error == nil {
+        if fault == nil {
             
             print("One Meal has been removed: \(result)")
             
             completion()
             
         } else {
-            print("Server reported an error on attempted removal: \(error)")
+            print("Server reported an error on attempted removal: \(fault)")
+            
+            error()
         }
     }
 }

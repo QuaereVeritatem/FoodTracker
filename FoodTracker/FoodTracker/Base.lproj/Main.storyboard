@@ -108,10 +108,13 @@
                                     <constraint firstAttribute="trailing" secondItem="FLB-VW-HH2" secondAttribute="trailing" id="l5p-6L-mUI"/>
                                 </constraints>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="7Aq-1m-GM0" userLabel="Save Spinner"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="vt8-hR-Ab6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="16" id="8YG-QJ-qg2"/>
+                            <constraint firstItem="7Aq-1m-GM0" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="8lD-mT-aVm"/>
+                            <constraint firstItem="7Aq-1m-GM0" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="JI0-h5-YN8"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vt8-hR-Ab6" secondAttribute="trailing" id="Mqg-fI-DXy"/>
                             <constraint firstItem="vt8-hR-Ab6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="ZMB-hd-5fA"/>
                         </constraints>
@@ -119,11 +122,12 @@
                     <navigationItem key="navigationItem" title="New Meal" id="gsy-9d-uQV">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="fAL-ZN-Qr3">
                             <connections>
-                                <action selector="cancel:" destination="BYZ-38-t0r" id="hHV-MO-31H"/>
+                                <action selector="cancel:" destination="BYZ-38-t0r" id="d5C-UL-U6H"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="Blw-kD-Gjw">
                             <connections>
+                                <action selector="save:" destination="BYZ-38-t0r" id="k3w-9e-rBI"/>
                                 <segue destination="DrW-dq-IQC" kind="unwind" unwindAction="unwindToMealList:" id="klo-xb-pHx"/>
                             </connections>
                         </barButtonItem>
@@ -133,6 +137,7 @@
                         <outlet property="photoImageView" destination="CSl-xy-Bud" id="x5h-BL-3s5"/>
                         <outlet property="ratingControl" destination="JhT-BA-MEe" id="NKp-OU-ZJ6"/>
                         <outlet property="saveButton" destination="Blw-kD-Gjw" id="kBO-n3-F0g"/>
+                        <outlet property="saveSpinner" destination="7Aq-1m-GM0" id="lEN-oV-WNE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
