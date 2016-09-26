@@ -129,48 +129,233 @@ class BackendlessManager {
                 
                 for meal in (meals?.data)! {
                     
-                    let meal = meal as! Meal
+                    let meal = meal as! BackendlessMeal
                     
                     print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
                 }
             },
             
             error: { (fault: Fault?) -> Void in
-                print("Meals were not fetched: \(fault)")
+                print("Failed to find Meals: \(fault)")
             }
         )
     }
     
+    func savePhotoAndThumbnail(mealToSave: BackendlessMeal, photo: UIImage, completion: @escaping () -> (), error: @escaping () -> ()) {
+        
+        //
+        // Upload the thumbnail image first...
+        //
+        
+        let uuid = NSUUID().uuidString
+        //print("\(uuid)")
+        
+        let size = photo.size.applying(CGAffineTransform(scaleX: 0.5, y: 0.5))
+        let hasAlpha = false
+        let scale: CGFloat = 0.1
+        
+        UIGraphicsBeginImageContextWithOptions(size, !hasAlpha, scale)
+        photo.draw(in: CGRect(origin: CGPoint.zero, size: size))
+        
+        let thumbnailImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let thumbnailData = UIImageJPEGRepresentation(thumbnailImage!, 1.0);
+        
+        backendless.fileService.upload(
+            "photos/\(backendless.userService.currentUser.objectId!)/thumb_\(uuid).jpg",
+            content: thumbnailData,
+            overwrite: true,
+            response: { (uploadedFile: BackendlessFile?) -> Void in
+                print("Thumbnail image uploaded: \(uploadedFile?.fileURL!)")
+                
+                mealToSave.thumbnailUrl = uploadedFile?.fileURL!
+                
+                //
+                // Upload full size photo.
+                //
+                
+                let fullSizeData = UIImageJPEGRepresentation(photo, 0.2);
+                
+                self.backendless.fileService.upload(
+                    "photos/\(self.backendless.userService.currentUser.objectId!)/full_\(uuid).jpg",
+                    content: fullSizeData,
+                    overwrite:true,
+                    response: { (uploadedFile: BackendlessFile?) -> Void in
+                        print("Photo image uploaded to: \(uploadedFile?.fileURL!)")
+                        
+                        mealToSave.photoUrl = uploadedFile?.fileURL!
+                        
+                        completion()
+                    },
+                    
+                    error: { (fault: Fault?) -> Void in
+                        print("Failed to save photo: \(fault)")
+                        error()
+                })
+            },
+            
+            error: { (fault: Fault?) -> Void in
+                print("Failed to save thumbnail: \(fault)")
+                error()
+        })
+    }
+    
    func saveMeal(mealData: Meal, completion: @escaping () -> (), error: @escaping () -> ()) {
         
-        let mealToSave = BackendlessMeal()
-        mealToSave.name = mealData.name
-        mealToSave.photoUrl = mealData.photoUrl
-        mealToSave.rating = mealData.rating
-        
-        // If the MealData object has an objectId - set it so we can update an existing Meal.
-        // Otherwise, we're creating a new Meal.
-        if let objectId = mealData.objectId {
-            mealToSave.objectId = objectId
-        }
-        
-        backendless.data.save( mealToSave,
-                               
-                               response: { (entity: Any?) -> Void in
-                                
-                                let meal = entity as! BackendlessMeal
-                                
-                                print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
-                                
-                                mealData.objectId = meal.objectId
-                                
-                                completion()
-            },
-                               
+        if mealData.objectId == nil {
+            
+            //
+            // Create a new Meal along with a photo and thumbnail image.
+            //
+            
+            let mealToSave = BackendlessMeal()
+            mealToSave.name = mealData.name
+            mealToSave.rating = mealData.rating
+            
+            savePhotoAndThumbnail(mealToSave: mealToSave, photo: mealData.photo!,
+                                                       
+               completion: {
+                
+                    // Once we save the photo and its thumbnail - save the Meal!
+                    self.backendless.data.save( mealToSave,
+
+                       response: { (entity: Any?) -> Void in
+
+                            let meal = entity as! BackendlessMeal
+
+                            print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
+
+                            mealData.objectId = meal.objectId
+                            mealData.photoUrl = meal.photoUrl
+                            mealData.thumbnailUrl = meal.thumbnailUrl
+                        
+                            completion()
+                        },
+                       
+                       error: { (fault: Fault?) -> Void in
+                            print("Failed to save Meal: \(fault)")
+                            error()
+                    })
+                },
+               
+                error: {
+                    print("Failed to save photo and thumbnail!")
+                    error()
+                })
+
+        } else if mealData.replacePhoto {
+            
+            //
+            // Update the Meal AND replace the existing photo and 
+            // thumbnail image with a new one.
+            //
+            
+            let mealToSave = BackendlessMeal()
+            
+            savePhotoAndThumbnail(mealToSave: mealToSave, photo: mealData.photo!,
+                                                       
+               completion: {
+
+                    let dataStore = self.backendless.persistenceService.of(Meal.ofClass())
+
+                    dataStore?.findID(mealData.objectId,
+                                      
+                        response: { (meal: Any?) -> Void in
+                            
+                            // We found the Meal to update.
+                            let meal = meal as! BackendlessMeal
+                            
+                            // Cache old URLs for removal!
+                            let oldPhotoUrl = meal.photoUrl!
+                            let oldthumbnailUrl = meal.thumbnailUrl!
+                            
+                            // Update the Meal with the new data.
+                            meal.name = mealData.name
+                            meal.rating = mealData.rating
+                            meal.photoUrl = mealToSave.photoUrl
+                            meal.thumbnailUrl = mealToSave.thumbnailUrl
+                            
+                            // Save the updated Meal.
+                            self.backendless.data.save( meal,
+                                                   
+                                response: { (entity: Any?) -> Void in
+                                    
+                                    let meal = entity as! BackendlessMeal
+                                    
+                                    print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
+                                    
+                                    // Update the mealData used by the UI with the new URLS!
+                                    mealData.photoUrl = meal.photoUrl
+                                    mealData.thumbnailUrl = meal.thumbnailUrl
+                                    
+                                    completion()
+                                    
+                                    // Attempt to remove the old photo and thumbnail images.
+                                    self.removePhotoAndThumbnail(photoUrl: oldPhotoUrl, thumbnailUrl: oldthumbnailUrl, completion: {}, error: {})
+                                },
+                                                   
                                error: { (fault: Fault?) -> Void in
-                                print("Meal failed to save: \(fault)")
-            }
-        )
+                                    print("Failed to save Meal: \(fault)")
+                                    error()
+                            })
+                        },
+                         
+                        error: { (fault: Fault?) -> Void in
+                            print("Failed to find Meal: \(fault)")
+                            error()
+                        }
+                    )
+                },
+                                                       
+                error: {
+                    print("Failed to save photo and thumbnail!")
+                    error()
+                })
+            
+        } else {
+            
+            //
+            // Update the Meal data but keep the existing photo and thumbnail image.
+            //
+            
+            let dataStore = backendless.persistenceService.of(BackendlessMeal.ofClass())
+
+            dataStore?.findID(mealData.objectId,
+                              
+                response: { (meal: Any?) -> Void in
+                    
+                    // We found the Meal to update.
+                    let meal = meal as! BackendlessMeal
+                    
+                    // Update the Meal with the new data
+                    meal.name = mealData.name
+                    meal.rating = mealData.rating
+                    
+                    // Save the updated Meal.
+                    self.backendless.data.save( meal,
+                                           
+                        response: { (entity: Any?) -> Void in
+                            
+                            let meal = entity as! BackendlessMeal
+                            
+                            print("Meal: \(meal.objectId!), name: \(meal.name), photoUrl: \"\(meal.photoUrl!)\", rating: \"\(meal.rating)\"")
+                            
+                            completion()
+                        },
+                                           
+                       error: { (fault: Fault?) -> Void in
+                            print("Failed to save Meal: \(fault)")
+                            error()
+                    })
+                },
+                 
+                error: { (fault: Fault?) -> Void in
+                    print("Failed to find Meal: \(fault)")
+                    error()
+                }
+            )
+        }
     }
     
     func loadMeals(completion: @escaping ([Meal]) -> ()) {
@@ -202,7 +387,8 @@ class BackendlessManager {
                                     
                                     newMealData.objectId = meal.objectId
                                     newMealData.photoUrl = meal.photoUrl
-                                    
+                                    newMealData.thumbnailUrl = meal.thumbnailUrl
+
                                     mealData.append(newMealData)
                                 }
                             }
@@ -212,36 +398,62 @@ class BackendlessManager {
             },
                          
                          error: { (fault: Fault?) -> Void in
-                            print("Meals were not fetched: \(fault)")
+                            print("Failed to find Meal: \(fault)")
             }
         )
     }
     
-    func removeMeal(mealToRemove: Meal, completion: () -> (), error: @escaping () -> ()) {
-        
-        let meal = BackendlessMeal()
-        
-        if let objectId = mealToRemove.objectId {
-            meal.objectId = objectId
-        }
-        
-        print("Remove Meal: \(meal.objectId!)")
-        
-        let dataStore = backendless.persistenceService.of(BackendlessMeal.ofClass())
+    func removeMeal(mealToRemove: Meal, completion: @escaping () -> (), error: @escaping () -> ()) {
         //dont delete something until it was removed from the database first!
-        var fault: Fault?
-        let result = dataStore?.remove(meal, fault: &fault)
+        print("Remove Meal: \(mealToRemove.objectId!)")
         
-        if fault == nil {
-            
+        let dataStore = backendless.persistenceService.of(Meal.ofClass())
+        
+        _ = dataStore?.removeID(mealToRemove.objectId, response: { (result: NSNumber?) -> Void in
+                                    
             print("One Meal has been removed: \(result)")
-            
-            completion()
-            
-        } else {
-            print("Server reported an error on attempted removal: \(fault)")
-            
+            completion() },
+                                
+            error: { (fault: Fault?) -> Void in
+            print("Failed to remove Meal: \(fault)")
             error()
-        }
+                
+            }
+        )
     }
+    
+    func removePhotoAndThumbnail(photoUrl: String, thumbnailUrl: String, completion: @escaping () -> (), error: @escaping () -> ()) {
+        
+        // Get just the file name which is everything after "/files/".
+        let photoFile = photoUrl.components(separatedBy: "/files/").last
+
+        backendless.fileService.remove( photoFile,
+                                        
+            response: { (result: Any!) -> () in
+                print("Photo has been removed: result = \(result)")
+                
+                // Get just the file name which is everything after "/files/".
+                let thumbnailFile = thumbnailUrl.components(separatedBy: "/files/").last
+                
+                self.backendless.fileService.remove( thumbnailFile,
+                                                     
+                    response: { (result: Any!) -> () in
+                        print("Thumbnail has been removed: result = \(result)")
+                        completion()
+                    },
+                    
+                    error: { (fault : Fault?) -> () in
+                        print("Failed to remove thumbnail: \(fault)")
+                         error()
+                    }
+                )
+            },
+            
+            error: { (fault : Fault?) -> () in
+                print("Failed to remove photo: \(fault)")
+                error()
+            }
+        )
+    }
+    
 }

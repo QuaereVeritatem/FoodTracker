@@ -24,6 +24,9 @@ class Meal: NSObject, NSCoding {
     
     var objectId: String?
     var photoUrl: String?
+    var thumbnailUrl: String?
+    
+    var replacePhoto: Bool = false
     
     // MARK: Archiving Paths
     //a persistent path on the file system where data will be saved and loaded..

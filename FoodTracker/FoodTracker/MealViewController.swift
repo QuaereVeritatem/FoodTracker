@@ -87,6 +87,11 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         // The info dictionary contains multiple representations of the image, and this uses the original.
         let selectedImage = info[UIImagePickerControllerOriginalImage] as! UIImage
         
+        // If we already have a URL for an image - the user wants to do an image replacement.
+                if meal?.photoUrl != nil {
+                  meal?.replacePhoto = true
+                }
+        
         // Set photoImageView to display the selected image.
         photoImageView.image = selectedImage
         
@@ -98,25 +103,22 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     
     @IBAction func save(_ sender: UIBarButtonItem) {
         
+         saveButton.isEnabled = false
+        
         let name = nameTextField.text ?? ""
         let rating = ratingControl.rating
         let photo = photoImageView.image
         
-        // TODO: Fix
-        let photoUrl = "https://guildsa.org/wp-content/uploads/2016/09/meal1.png"
-        
         if meal == nil {
             
             meal = Meal(name: name, photo: photo, rating: rating)
-            
-            meal?.photoUrl = photoUrl
-            
+
         } else {
             
             meal?.name = name
             meal?.photo = photo
             meal?.rating = rating
-            meal?.photoUrl = photoUrl
+          
         }
         
         if BackendlessManager.sharedInstance.isUserLoggedIn() {
@@ -130,7 +132,9 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
                                                         
                     // It was saved to the database!
                     self.saveSpinner.stopAnimating()
-                                                        
+                        
+                         self.meal?.replacePhoto = false // Reset this just in case we did a photo replacement.
+                        
                         self.performSegue(withIdentifier: "unwindToMealList", sender: self)
                 },
                     
@@ -147,13 +151,17 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
                         alertController.addAction(okAction)
                         
                         self.present(alertController, animated: true, completion: nil)
-                }
-            )
+                        
+                        self.saveButton.isEnabled = true
+
+                })
+            
         } else {
             
             // We're not logged in - just unwind and have MealTableViewController
             // save later using NSKeyedArchiver.
             self.performSegue(withIdentifier: "unwindToMealList", sender: self)
+            
         }
     }
 
@@ -177,7 +185,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
 
 
     // This method lets you configure a view controller before it's presented.
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if saveButton === (sender as! UIBarButtonItem) {
             //if it’s nil, the nil coalescing operator then returns the empty string ("") instead.
@@ -203,7 +211,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
                 meal?.photoUrl = photoUrl
             }
         }
-    }
+    } */
     
     // MARK: Actions
 

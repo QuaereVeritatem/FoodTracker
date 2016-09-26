@@ -127,8 +127,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="Blw-kD-Gjw">
                             <connections>
-                                <action selector="save:" destination="BYZ-38-t0r" id="k3w-9e-rBI"/>
-                                <segue destination="DrW-dq-IQC" kind="unwind" unwindAction="unwindToMealList:" id="klo-xb-pHx"/>
+                                <action selector="save:" destination="BYZ-38-t0r" id="jTt-0K-fWg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -138,6 +137,7 @@
                         <outlet property="ratingControl" destination="JhT-BA-MEe" id="NKp-OU-ZJ6"/>
                         <outlet property="saveButton" destination="Blw-kD-Gjw" id="kBO-n3-F0g"/>
                         <outlet property="saveSpinner" destination="7Aq-1m-GM0" id="lEN-oV-WNE"/>
+                        <segue destination="DrW-dq-IQC" kind="unwind" identifier="unwindToMealList" unwindAction="unwindToMealList:" id="kn2-WI-Scu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
