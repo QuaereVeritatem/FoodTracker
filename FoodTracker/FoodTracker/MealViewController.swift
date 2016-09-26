@@ -7,7 +7,8 @@
 //
 
 import UIKit
-
+//save full size and thumbnail image first to get the url then save the meal
+//chain succesful calls together(success call for a pic then save another
 
 class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -106,7 +107,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         
         if meal == nil {
             
-            meal = MealData(name: name, photo: photo, rating: rating)
+            meal = Meal(name: name, photo: photo, rating: rating)
             
             meal?.photoUrl = photoUrl
             

@@ -14,5 +14,6 @@ class BackendlessMeal: NSObject {
     var objectId: String?
     var name: String?
     var photoUrl: String?
+   // var thumbnailUrl: String?
     var rating: Int = 0
 }
