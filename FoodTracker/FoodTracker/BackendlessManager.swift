@@ -52,6 +52,67 @@ class BackendlessManager {
         }
     }
     
+    func loginUser(email: String, password: String, completion: @escaping () -> (), error: @escaping (String) -> ()) {
+        
+        backendless.userService.login( email, password: password,
+                                       
+                                       response: { (user: BackendlessUser?) -> Void in
+                                        print("User logged in: \(user!.objectId)")
+                                        completion()
+            },
+                                       
+                                       error: { (fault: Fault?) -> Void in
+                                        print("User failed to login: \(fault)")
+                                        error((fault?.message)!)
+        })
+    }
+    
+    func logoutUser(completion: @escaping () -> (), error: @escaping (String) -> ()) {
+        
+        // First, check if the user is actually logged in.
+        if isUserLoggedIn() {
+            
+            // If they are currently logged in - go ahead and log them out!
+            
+            backendless.userService.logout( { (user: Any!) -> Void in
+                print("User logged out!")
+                completion()
+                },
+                                            
+                                            error: { (fault: Fault?) -> Void in
+                                                print("User failed to log out: \(fault)")
+                                                error((fault?.message)!)
+            })
+            
+        } else {
+            
+            print("User is already logged out!");
+            completion()
+        }
+    }
+    
+    func registerUser(email: String, password: String, completion: @escaping () -> (), error: @escaping (String) -> ()) {
+        
+        let user: BackendlessUser = BackendlessUser()
+        user.email = email as NSString!
+        user.password = password as NSString!
+        
+        backendless.userService.registering( user,
+                                             
+                                             response: { (user: BackendlessUser?) -> Void in
+                                                
+                                                print("User was registered: \(user?.objectId)")
+                                                completion()
+            },
+                                             
+                                             error: { (fault: Fault?) -> Void in
+                                                print("User failed to register: \(fault)")
+                                                error((fault?.message)!)
+            }
+        )
+    }
+
+    
     func registerTestUser() {
         
         let user: BackendlessUser = BackendlessUser()
@@ -257,7 +318,7 @@ class BackendlessManager {
                                                        
                completion: {
 
-                    let dataStore = self.backendless.persistenceService.of(Meal.ofClass())
+                    let dataStore = self.backendless.persistenceService.of(BackendlessMeal.ofClass())
 
                     dataStore?.findID(mealData.objectId,
                                       
@@ -403,11 +464,12 @@ class BackendlessManager {
         )
     }
     
+    
     func removeMeal(mealToRemove: Meal, completion: @escaping () -> (), error: @escaping () -> ()) {
         //dont delete something until it was removed from the database first!
         print("Remove Meal: \(mealToRemove.objectId!)")
         
-        let dataStore = backendless.persistenceService.of(Meal.ofClass())
+        let dataStore = backendless.persistenceService.of(BackendlessMeal.ofClass())
         
         _ = dataStore?.removeID(mealToRemove.objectId, response: { (result: NSNumber?) -> Void in
                                     

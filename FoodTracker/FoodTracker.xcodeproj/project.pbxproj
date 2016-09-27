@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		370E35211D92EB33000DE4AB /* BackendlessMeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E35201D92EB33000DE4AB /* BackendlessMeal.swift */; };
 		370E35251D9434D9000DE4AB /* BackendlessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E35241D9434D9000DE4AB /* BackendlessManager.swift */; };
+		372C37CB1D9AE3B900882ACC /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372C37C71D9AE3B900882ACC /* LoginViewController.swift */; };
+		372C37CC1D9AE3B900882ACC /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372C37C81D9AE3B900882ACC /* MenuViewController.swift */; };
+		372C37CD1D9AE3B900882ACC /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372C37C91D9AE3B900882ACC /* RegisterViewController.swift */; };
+		372C37CE1D9AE3B900882ACC /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372C37CA1D9AE3B900882ACC /* Utility.swift */; };
 		37A51FE41D89ECC500AE0ABD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A51FE31D89ECC500AE0ABD /* AppDelegate.swift */; };
 		37A51FE61D89ECC500AE0ABD /* MealViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A51FE51D89ECC500AE0ABD /* MealViewController.swift */; };
 		37A51FE91D89ECC500AE0ABD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37A51FE71D89ECC500AE0ABD /* Main.storyboard */; };
@@ -37,6 +41,10 @@
 /* Begin PBXFileReference section */
 		370E35201D92EB33000DE4AB /* BackendlessMeal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendlessMeal.swift; sourceTree = "<group>"; };
 		370E35241D9434D9000DE4AB /* BackendlessManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendlessManager.swift; sourceTree = "<group>"; };
+		372C37C71D9AE3B900882ACC /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		372C37C81D9AE3B900882ACC /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
+		372C37C91D9AE3B900882ACC /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		372C37CA1D9AE3B900882ACC /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		37A51FE01D89ECC500AE0ABD /* FoodTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37A51FE31D89ECC500AE0ABD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		37A51FE51D89ECC500AE0ABD /* MealViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealViewController.swift; sourceTree = "<group>"; };
@@ -102,6 +110,10 @@
 		37A51FE21D89ECC500AE0ABD /* FoodTracker */ = {
 			isa = PBXGroup;
 			children = (
+				372C37C71D9AE3B900882ACC /* LoginViewController.swift */,
+				372C37C81D9AE3B900882ACC /* MenuViewController.swift */,
+				372C37C91D9AE3B900882ACC /* RegisterViewController.swift */,
+				372C37CA1D9AE3B900882ACC /* Utility.swift */,
 				37A51FE31D89ECC500AE0ABD /* AppDelegate.swift */,
 				37A51FE51D89ECC500AE0ABD /* MealViewController.swift */,
 				37D340851D8B4DEC00F2925F /* Meal.swift */,
@@ -350,11 +362,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				372C37CB1D9AE3B900882ACC /* LoginViewController.swift in Sources */,
+				372C37CD1D9AE3B900882ACC /* RegisterViewController.swift in Sources */,
+				372C37CC1D9AE3B900882ACC /* MenuViewController.swift in Sources */,
 				37D340861D8B4DEC00F2925F /* Meal.swift in Sources */,
 				37A51FE61D89ECC500AE0ABD /* MealViewController.swift in Sources */,
 				370E35251D9434D9000DE4AB /* BackendlessManager.swift in Sources */,
 				37D340841D8B02E600F2925F /* RatingControl.swift in Sources */,
 				37A51FE41D89ECC500AE0ABD /* AppDelegate.swift in Sources */,
+				372C37CE1D9AE3B900882ACC /* Utility.swift in Sources */,
 				37D3408B1D8B959A00F2925F /* MealTableViewController.swift in Sources */,
 				370E35211D92EB33000DE4AB /* BackendlessMeal.swift in Sources */,
 				37D340891D8B593400F2925F /* MealTableViewCell.swift in Sources */,
