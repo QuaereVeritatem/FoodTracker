@@ -18,11 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         BackendlessManager.sharedInstance.initApp()
         
-        if !BackendlessManager.sharedInstance.isUserLoggedIn() {
-            BackendlessManager.sharedInstance.registerTestUser()
+        if BackendlessManager.sharedInstance.isUserLoggedIn() {
+            
+            // If the user is logged in - skip the login view and go straight to the meal list!
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "tabBarController")
         }
-                
+        
         return true
+
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

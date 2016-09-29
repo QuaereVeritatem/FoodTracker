@@ -65,7 +65,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JAf-FH-6vW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="357" y="312"/>
+            <point key="canvasLocation" x="1295.2" y="311.69415292353824"/>
         </scene>
         <!--New Meal-->
         <scene sceneID="tne-QT-ifu">
@@ -148,12 +148,13 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1172" y="853"/>
+            <point key="canvasLocation" x="2111.1999999999998" y="852.3238380809596"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Item-->
         <scene sceneID="jq4-oN-aAz">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="AbB-sv-qQS" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="52G-dw-r2p"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="K24-Yh-pQN">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -166,7 +167,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sB0-UQ-naN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-455" y="312"/>
+            <point key="canvasLocation" x="484" y="311.69415292353824"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zO3-rQ-6Pr">
@@ -184,7 +185,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5nU-1k-OVp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1172" y="64"/>
+            <point key="canvasLocation" x="2111.1999999999998" y="63.418290854572717"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="9Q7-jf-6zR">
@@ -259,7 +260,7 @@
                         <outlet property="loginBtn" destination="dor-Xa-VkF" id="eUi-Ij-6XV"/>
                         <outlet property="passwordTextField" destination="fTs-at-jWP" id="VgY-UF-Z62"/>
                         <outlet property="spinner" destination="Ll1-hN-aaB" id="FFe-Pm-5mc"/>
-                        <segue destination="AbB-sv-qQS" kind="showDetail" identifier="gotoMenuFromLogin" id="Llh-2Q-iDr"/>
+                        <segue destination="i7P-i3-jD0" kind="showDetail" identifier="gotoMenuFromLogin" id="Llh-2Q-iDr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g5G-9O-vRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -353,12 +354,80 @@
                         <outlet property="passwordTextField" destination="W3m-t1-fwh" id="Col-qx-Gti"/>
                         <outlet property="registerBtn" destination="uXn-sI-Ubf" id="QkB-y0-qEt"/>
                         <outlet property="spinner" destination="dnI-F2-YN6" id="0r0-fh-EeY"/>
-                        <segue destination="AbB-sv-qQS" kind="showDetail" id="mlr-Dg-87C"/>
+                        <segue destination="i7P-i3-jD0" kind="showDetail" identifier="gotoMenuFromRegister" id="mlr-Dg-87C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PKS-A2-2KV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1388" y="700"/>
+        </scene>
+        <!--SettingsViewController-->
+        <scene sceneID="0sB-BD-2rN">
+            <objects>
+                <viewController id="QOX-3E-c83" userLabel="SettingsViewController" customClass="SettingsViewController" customModule="FoodTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Z2s-j4-zSn"/>
+                        <viewControllerLayoutGuide type="bottom" id="DtU-Vj-bpb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2DO-oO-sb9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mh-FL-Qmb">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="64" id="Upl-Fi-jzh"/>
+                                    <constraint firstAttribute="height" constant="21" id="yBb-nW-uIA"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Fx-NN-Pck">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="ANr-gi-uiE"/>
+                                    <constraint firstAttribute="width" constant="56" id="at6-r9-6NP"/>
+                                </constraints>
+                                <state key="normal" title="Logout"/>
+                                <connections>
+                                    <action selector="logout:" destination="QOX-3E-c83" eventType="touchUpInside" id="n5O-ze-WsU"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="0gd-ZO-lam" userLabel="Spinner"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1mh-FL-Qmb" firstAttribute="top" secondItem="Z2s-j4-zSn" secondAttribute="bottom" constant="64" id="DgC-mx-Jr9"/>
+                            <constraint firstItem="4Fx-NN-Pck" firstAttribute="centerX" secondItem="2DO-oO-sb9" secondAttribute="centerX" id="Ecc-1Y-gcC"/>
+                            <constraint firstItem="1mh-FL-Qmb" firstAttribute="centerX" secondItem="2DO-oO-sb9" secondAttribute="centerX" id="EuM-lF-lp7"/>
+                            <constraint firstItem="0gd-ZO-lam" firstAttribute="top" secondItem="4Fx-NN-Pck" secondAttribute="bottom" constant="63" id="NUf-lk-oWI"/>
+                            <constraint firstItem="4Fx-NN-Pck" firstAttribute="top" secondItem="1mh-FL-Qmb" secondAttribute="bottom" constant="57" id="fH1-CV-HP3"/>
+                            <constraint firstItem="0gd-ZO-lam" firstAttribute="centerX" secondItem="2DO-oO-sb9" secondAttribute="centerX" id="zvd-Pk-kvE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="spinner" destination="0gd-ZO-lam" id="R2v-zL-FIP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dpT-h3-xef" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-454" y="1043"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="Fyj-Gm-fEN">
+            <objects>
+                <tabBarController storyboardIdentifier="tabBarController" automaticallyAdjustsScrollViewInsets="NO" id="i7P-i3-jD0" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="vtk-Ie-MP9">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="AbB-sv-qQS" kind="relationship" relationship="viewControllers" id="ZCy-3b-0A7"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b3z-bQ-uGz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-455.19999999999999" y="311.69415292353824"/>
         </scene>
     </scenes>
     <resources>
@@ -366,6 +435,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="mlr-Dg-87C"/>
-        <segue reference="V7C-Zy-bhm"/>
+        <segue reference="59w-qD-oqL"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -27,11 +27,13 @@ class MealTableViewController: UITableViewController {
         
         if BackendlessManager.sharedInstance.isUserLoggedIn() {
             //singleton with a closure
-            BackendlessManager.sharedInstance.loadMeals { mealData in
+            BackendlessManager.sharedInstance.loadMeals(
                 
+                completion: { mealData in
                 self.meals += mealData
                 self.tableView.reloadData()
-            }
+                },
+                error: {})
             
         } else {
             
