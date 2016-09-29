@@ -176,42 +176,6 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
             navigationController!.popViewController(animated: true)
         }
     }
-
-    
-    
-
-
-
-
-
-    // This method lets you configure a view controller before it's presented.
-    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if saveButton === (sender as! UIBarButtonItem) {
-            //if it’s nil, the nil coalescing operator then returns the empty string ("") instead.
-            let name = nameTextField.text ?? ""
-            let photo = photoImageView.image
-            let rating = ratingControl.rating
-            
-// TODO: Fix
-            let photoUrl = "https://guildsa.org/wp-content/uploads/2016/09/meal1.png"
-            
-            // Set the meal to be passed to MealTableViewController after the unwind segue.
-            if meal == nil {
-
-            meal = Meal(name: name, photo: photo, rating: rating)
-                
-            meal?.photoUrl = photoUrl
-                
-            } else {
-                
-                meal?.name = name
-                meal?.photo = photo
-                meal?.rating = rating
-                meal?.photoUrl = photoUrl
-            }
-        }
-    } */
     
     // MARK: Actions
 
