@@ -19,21 +19,28 @@ class MealTableViewController: UITableViewController {
     
     let backendless = Backendless.sharedInstance()!
     
+    // More info on NSCache:
+    // http://nshipster.com/nscache/
+    // http://stackoverflow.com/questions/10502809/objective-c-benefits-of-using-nscache-over-a-static-nsmutabledictionary
+    // http://blog.csdn.net/chuanyituoku/article/details/17336443
+    
+    // Create a cache that uses keys of type NSString to point to types of UIImage.
+    var imageCache = NSCache<NSString, UIImage>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
        
+        imageCache.countLimit = 50 // Cache up to 50 UIImage(s)
+        
+        // Add support for pull-to-refresh on the table view.
+        self.refreshControl?.addTarget(self, action: #selector(refresh(sender:)), for: UIControlEvents.valueChanged)
+        
         // Use the edit button item provided by the table view controller.
         navigationItem.leftBarButtonItem = editButtonItem
         
         if BackendlessManager.sharedInstance.isUserLoggedIn() {
-            //singleton with a closure
-            BackendlessManager.sharedInstance.loadMeals(
-                
-                completion: { mealData in
-                self.meals += mealData
-                self.tableView.reloadData()
-                },
-                error: {})
+           
+            refresh(sender: self)
             
         } else {
             
@@ -48,6 +55,28 @@ class MealTableViewController: UITableViewController {
             }
         }
     }
+    
+    //cant set parameter to nil so its set to AnyObject
+    func refresh(sender: AnyObject) {
+        
+        if BackendlessManager.sharedInstance.isUserLoggedIn() {
+            
+            BackendlessManager.sharedInstance.loadMeals(
+                
+                completion: { mealData in
+                    
+                    self.meals = mealData
+                    self.tableView.reloadData()
+                    self.refreshControl?.endRefreshing()
+                },
+                
+                error: {
+                    self.tableView.reloadData()
+                    self.refreshControl?.endRefreshing()
+            })
+        }
+    }
+
     
     func loadSampleMeals() {
         
@@ -93,15 +122,45 @@ class MealTableViewController: UITableViewController {
         cell.photoImageView.image = nil
         
         if BackendlessManager.sharedInstance.isUserLoggedIn() && meal.thumbnailUrl != nil {
-            loadImageFromUrl(cell: cell, thumbnailUrl: meal.thumbnailUrl!)
+            
+            if imageCache.object(forKey: meal.thumbnailUrl! as NSString) != nil {
+                
+                // If the URL for the thumbnail is in the cache already - get the UIImage that belongs to it.
+                cell.photoImageView.image = imageCache.object(forKey: meal.thumbnailUrl! as NSString)
+                
+            } else {
+                
+                cell.spinner.startAnimating()
+                
+                loadImageFromUrl(thumbnailUrl: meal.thumbnailUrl!,
+                                 
+                                 completion: { data in
+                                    
+                                    // We got the image data! Use it to create a UIImage for our cell's
+                                    // UIImageView. Then, stop the activity spinner.
+                                    if let image = UIImage(data: data) {
+                                        
+                                        cell.photoImageView.image = image
+                                        
+                                        // Since we went to the trouble of pulling down the image data and
+                                        // building a UIImage lets cache the UIImage using the URL as the key.
+                                        self.imageCache.setObject(image, forKey: meal.thumbnailUrl! as NSString)
+                                    }
+                                    
+                                    cell.spinner.stopAnimating()
+                    },
+                                 
+                                 loadError: {
+                                    cell.spinner.stopAnimating()
+                })
+            }
+            
         } else {
             cell.photoImageView.image = meal.photo
         }
         
         cell.ratingControl.rating = meal.rating
         
-
-
         return cell
     }
  
@@ -210,9 +269,11 @@ class MealTableViewController: UITableViewController {
 
     // MARK: NSCoding
     
-    func loadImageFromUrl(cell: MealTableViewCell, thumbnailUrl: String) {
+    func loadImageFromUrl(thumbnailUrl: String, completion: @escaping (Data) -> (), loadError: @escaping () -> ()) {
         
         let url = URL(string: thumbnailUrl)!
+        
+        print("loadImageFromUrl: \(url)")
         
         let session = URLSession.shared
         
@@ -221,23 +282,24 @@ class MealTableViewController: UITableViewController {
             if error == nil {
                 
                 do {
-                    
                     let data = try Data(contentsOf: url, options: [])
                     
                     DispatchQueue.main.async {
-                        
-                        // We got the image data! Use it to create a UIImage for our cell's
-                        // UIImageView. Then, stop the activity spinner.
-                        cell.photoImageView.image = UIImage(data: data)
-                        //cell.activityIndicator.stopAnimating()
+                        completion(data)
                     }
                     
                 } catch {
                     print("NSData Error: \(error)")
+                    DispatchQueue.main.async {
+                        loadError()
+                    }
                 }
                 
             } else {
                 print("NSURLSession Error: \(error)")
+                DispatchQueue.main.async {
+                    loadError()
+                }
             }
         })
         
